@@ -1,5 +1,6 @@
 package br.com.yomu.gamificacaoDaLeitura.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import br.com.yomu.gamificacaoDaLeitura.model.enums.TipoMeta;
 import br.com.yomu.gamificacaoDaLeitura.model.enums.UnidadeMeta;
 import jakarta.persistence.*;
@@ -26,6 +27,7 @@ public class Meta {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
+    @JsonIgnore
     private Usuario usuario;
 
     @Enumerated(EnumType.STRING)

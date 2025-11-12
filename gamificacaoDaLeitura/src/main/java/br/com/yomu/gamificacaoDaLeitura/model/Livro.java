@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -65,8 +67,10 @@ public class Livro {
 
     // Relacionamentos
     @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Progresso> progressos;
 
     @OneToMany(mappedBy = "livro")
+    @JsonIgnore
     private List<Indicacao> indicacoes;
 }

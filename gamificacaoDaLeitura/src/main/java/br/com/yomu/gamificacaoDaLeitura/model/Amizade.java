@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -24,10 +26,12 @@ public class Amizade {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id_1", nullable = false)
+    @JsonIgnore
     private Usuario usuarioId1;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id_2", nullable = false)
+    @JsonIgnore
     private Usuario usuarioId2;
 
     @Enumerated(EnumType.STRING)

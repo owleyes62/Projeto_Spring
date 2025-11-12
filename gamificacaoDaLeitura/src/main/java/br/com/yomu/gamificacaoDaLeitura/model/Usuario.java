@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -74,33 +76,41 @@ public class Usuario {
     // Relacionamentos (ignorados no Swagger para evitar recursão)
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     @Schema(hidden = true)
+    @JsonIgnore
     private List<Livro> livros;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     @Schema(hidden = true)
+    @JsonIgnore
     private List<Progresso> progressos;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     @Schema(hidden = true)
+    @JsonIgnore
     private List<Meta> metas;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     @Schema(hidden = true)
+    @JsonIgnore
     private List<Notificacao> notificacoes;
 
     @OneToMany(mappedBy = "usuarioId1")
     @Schema(hidden = true)
+    @JsonIgnore
     private List<Amizade> amizadesEnviadas;
 
     @OneToMany(mappedBy = "usuarioId2")
     @Schema(hidden = true)
+    @JsonIgnore
     private List<Amizade> amizadesRecebidas;
 
     @OneToMany(mappedBy = "remetente")
     @Schema(hidden = true)
+    @JsonIgnore
     private List<Indicacao> indicacoesEnviadas;
 
     @OneToMany(mappedBy = "destinatario")
     @Schema(hidden = true)
+    @JsonIgnore
     private List<Indicacao> indicacoesRecebidas;
 }

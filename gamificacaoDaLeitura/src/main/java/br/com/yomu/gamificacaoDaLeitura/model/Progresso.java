@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -25,10 +27,12 @@ public class Progresso{
 
     @ManyToOne(fetch = FetchType.LAZY) // Só sera carregado quando for acessado
     @JoinColumn(name = "livro_id", nullable = false)
+    @JsonIgnore
     private Livro livro;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false) // garante que n pode ser nula e define a chave estrangeira
+    @JsonIgnore
     private Usuario usuario;
 
     @Min(value = 1, message = "Quantidade deve ser maior que zero")
