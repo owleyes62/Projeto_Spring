@@ -10,7 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDateTime;
@@ -22,70 +21,68 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Representa um livro cadastrado pelo usuário no sistema Yomu")
+@Schema(description = "Entidade que representa um livro registrado pelo usuário")
 public class Livro {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Schema(description = "Identificador único do livro", example = "60cf600f-748e-49e8-8aae-534e6186770b")
+    @Schema(description = "ID único do livro", accessMode = Schema.AccessMode.READ_ONLY)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
-    @Schema(description = "Usuário dono do livro (oculto no Swagger)", hidden = true)
     @JsonIgnore
     private Usuario usuario;
 
     @NotBlank(message = "Título é obrigatório")
-    @Column(nullable = false)
     @Schema(description = "Título do livro", example = "O Senhor dos Anéis")
     private String titulo;
 
     @NotBlank(message = "Autor é obrigatório")
-    @Column(nullable = false)
-    @Schema(description = "Nome do autor", example = "J. R. R. Tolkien")
+    @Schema(description = "Autor do livro", example = "J. R. R. Tolkien")
     private String autor;
 
-    @Min(value = 0)
-    @Schema(description = "Quantidade de páginas (necessário se tipoRegistro = PAGINA)", example = "1200")
+    @Min(0)
+    @Schema(description = "Número total de páginas", example = "1200")
     private Integer numeroPaginas;
 
-    @Min(value = 0)
-    @Schema(description = "Quantidade de capítulos (necessário se tipoRegistro = CAPITULO)", example = "50")
+    @Min(0)
+    @Schema(description = "Número total de capítulos", example = "62")
     private Integer numeroCapitulos;
 
-    @Schema(description = "URL da imagem de capa", example = "https://images.pexels.com/photos/22969/pexels-photo.jpg")
+    @Schema(description = "URL da imagem da capa", example = "https://images.site.com/capa.jpg")
     private String capa;
 
     @Column(columnDefinition = "TEXT")
-    @Schema(description = "Descrição ou sinopse completa do livro", example = "Uma fantasia épica sobre a jornada para destruir o Um Anel.")
+    @Schema(description = "Descrição do livro", example = "Uma fantasia épica...")
     private String descricao;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @Schema(description = "Tipo de progressão usada para registrar leitura", example = "PAGINA")
+    @Schema(description = "Tipo de registro (página ou capítulo)", example = "PAGINA")
     private TipoRegistro tipoRegistro;
 
     @Column(nullable = false)
-    @Schema(description = "Indica se o livro já foi finalizado", example = "false")
+    @Schema(description = "Indica se o livro foi finalizado", example = "false")
     private Boolean finalizado = false;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    @Schema(description = "Data de criação", example = "2025-11-01T10:15:30")
+    @Schema(description = "Data de criação", accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(nullable = false)
-    @Schema(description = "Data da última atualização", example = "2025-11-10T15:22:10")
+    @Schema(description = "Última atualização", accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime updatedAt;
 
-    // Relacionamentos ocultos (evita loops)
+    @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    @OneToMany(mappedBy = "livro")
+    @Schema(hidden = true)
     private List<Progresso> progressos;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "livro")
+    @JsonIgnore
+    @Schema(hidden = true)
     private List<Indicacao> indicacoes;
 }
