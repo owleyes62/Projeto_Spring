@@ -6,14 +6,41 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.Files;
 import java.util.List;
 import java.util.UUID;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+
+        private String salvarImagem(String base64) {
+        try {
+            String[] parts = base64.split(",");
+            String imageString = parts[1];
+            byte[] imageBytes = java.util.Base64.getDecoder().decode(imageString);
+
+            String fileName = UUID.randomUUID() + ".png";
+            Path uploadDir = Paths.get("uploads");
+            Path filePath = uploadDir.resolve(fileName);
+
+            // cria a pasta se não existir
+            if (!Files.exists(uploadDir)) {
+                Files.createDirectories(uploadDir);
+            }
+
+            Files.write(filePath, imageBytes);
+
+            // retorna caminho relativo ou URL
+            return "/uploads/" + fileName;
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao salvar imagem", e);
+        }
+    }
 
     // UsuariosService.java
     @Transactional(readOnly = true)
@@ -38,6 +65,11 @@ public class UsuarioService {
         
         // Gerar código de convite único
         usuario.setCodigoConvite(gerarCodigoConvite());
+
+         if (usuario.getFotoPerfil() != null && usuario.getFotoPerfil().startsWith("data:image")) {
+            String url = salvarImagem(usuario.getFotoPerfil());
+            usuario.setFotoPerfil(url);
+        }
         
         return usuarioRepository.save(usuario);
     }
@@ -65,7 +97,8 @@ public class UsuarioService {
             usuario.setNomeUsuario(usuarioAtualizado.getNomeUsuario());
         }
         if (usuarioAtualizado.getFotoPerfil() != null) {
-            usuario.setFotoPerfil(usuarioAtualizado.getFotoPerfil());
+            String url = salvarImagem(usuarioAtualizado.getFotoPerfil());
+            usuario.setFotoPerfil(url);
         }
         
         return usuarioRepository.save(usuario);

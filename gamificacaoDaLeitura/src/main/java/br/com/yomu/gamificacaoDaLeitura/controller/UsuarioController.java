@@ -85,6 +85,9 @@ public class UsuarioController {
                 schema = @Schema(
                     example = "{\n" +
                               "  \"nomeUsuario\": \"joao_silva\",\n" +
+                              "  \"fotoPerfil\": \"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA\",\n" +
+                              "  \"nome\": \"João Silva\",\n" +
+                              "  \"genero\": \"masc\",\n" +
                               "  \"email\": \"joao@email.com\",\n" +
                               "  \"senha\": \"senha123\"\n" +
                               "}"

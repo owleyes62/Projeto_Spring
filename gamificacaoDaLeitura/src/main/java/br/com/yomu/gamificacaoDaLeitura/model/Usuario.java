@@ -35,6 +35,16 @@ public class Usuario {
     @Schema(description = "Nome de usuário único", example = "joao_silva", required = true)
     private String nomeUsuario;
 
+    @NotBlank(message = "Nome do usuário é obrigatório")
+    @Column(nullable = false)
+    @Schema(description = "Nome de usuário", example = "João Silva", required = true)
+    private String nome;
+
+    @NotBlank(message = "Gênero é obrigatório")
+    @Column(nullable = false)
+    @Schema(description = "Gênero", example = "masculino", required = true)
+    private String genero;
+
     @NotBlank(message = "Email é obrigatório")
     @Email(message = "Email deve ser válido")
     @Column(nullable = false, unique = true)
