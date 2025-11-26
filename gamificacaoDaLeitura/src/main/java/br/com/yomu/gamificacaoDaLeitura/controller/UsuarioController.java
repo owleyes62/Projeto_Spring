@@ -87,7 +87,7 @@ public class UsuarioController {
                               "  \"nomeUsuario\": \"joao_silva\",\n" +
                               "  \"fotoPerfil\": \"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA\",\n" +
                               "  \"nome\": \"João Silva\",\n" +
-                              "  \"genero\": \"masc\",\n" +
+                              "  \"genero\": \"masculino\",\n" +
                               "  \"email\": \"joao@email.com\",\n" +
                               "  \"senha\": \"senha123\"\n" +
                               "}"
