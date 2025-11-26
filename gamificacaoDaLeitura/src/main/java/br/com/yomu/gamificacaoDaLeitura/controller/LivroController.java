@@ -145,10 +145,27 @@ public class LivroController {
             @ApiResponse(responseCode = "404", description = "Livro não encontrado")
     })
     public ResponseEntity<Livro> atualizar(
-            @Parameter(description = "ID do livro", required = true)
-            @PathVariable UUID id,
-
-            @Valid @RequestBody Livro livro) {
+        @Parameter(description = "ID do livro", required = true)
+        @PathVariable UUID id,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Dados do livro a serem atualizados",
+        content = @Content(
+                        schema = @Schema(implementation = Livro.class),
+                        examples = @ExampleObject(
+                                value = """
+                                {
+                                "titulo": "O Senhor dos Anéis",
+                                "autor": "J.R.R. Tolkien",
+                                "descricao": "Uma jornada épica pela Terra Média",
+                                "numeroPaginas": 1200,
+                                "numeroCapitulos": 62,
+                                "finalizado": true
+                                }
+                                """
+                        )
+                )
+        )
+        @Valid @RequestBody Livro livro) {
 
         return ResponseEntity.ok(livroService.atualizar(id, livro));
     }

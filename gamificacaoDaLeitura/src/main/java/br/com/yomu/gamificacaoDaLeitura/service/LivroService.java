@@ -49,6 +49,8 @@ public class LivroService {
         if (livroAtualizado.getDescricao() != null) livro.setDescricao(livroAtualizado.getDescricao());
         if (livroAtualizado.getCapa() != null) livro.setCapa(livroAtualizado.getCapa());
         if (livroAtualizado.getFinalizado() != null) livro.setFinalizado(livroAtualizado.getFinalizado());
+        if (livroAtualizado.getNumeroPaginas() != null) livro.setNumeroPaginas(livroAtualizado.getNumeroPaginas());
+        if (livroAtualizado.getNumeroCapitulos() != null) livro.setNumeroCapitulos(livroAtualizado.getNumeroCapitulos());
 
         return livroRepository.save(livro);
     }
