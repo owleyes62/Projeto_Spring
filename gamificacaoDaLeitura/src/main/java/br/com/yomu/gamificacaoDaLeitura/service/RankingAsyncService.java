@@ -28,6 +28,7 @@ public class RankingAsyncService {
      * Escuta o evento APÓS o commit da transação de progresso.
      * Roda em nova transação separada.
      */
+    
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Async("rankingTaskExecutor")
     @Transactional(propagation = Propagation.REQUIRES_NEW) // ✅ Nova transação
