@@ -1,9 +1,15 @@
 package br.com.yomu.gamificacaoDaLeitura.controller;
 
+
 import br.com.yomu.gamificacaoDaLeitura.model.Indicacao;
 import br.com.yomu.gamificacaoDaLeitura.service.IndicacaoService;
+import br.com.yomu.gamificacaoDaLeitura.swagger.IndicacaoSwagger;
+import br.com.yomu.gamificacaoDaLeitura.swagger.IndicacaoSwagger.IndicacaoCreate;
+import br.com.yomu.gamificacaoDaLeitura.swagger.IndicacaoSwagger.IndicacaoResponse;
+import br.com.yomu.gamificacaoDaLeitura.swagger.IndicacaoSwagger.IndicacaoSummary;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 import java.util.UUID;
@@ -26,11 +33,11 @@ public class IndicacaoController {
     private final IndicacaoService indicacaoService;
 
     @PostMapping
-    @Operation(summary = "Criar indicação de livro", 
+    @Operation(summary = "Criar indicação de livro",
                description = "Permite que um usuário indique um livro para outro usuário, criando uma notificação automática")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Indicação criada com sucesso",
-            content = @Content(schema = @Schema(implementation = Indicacao.class))),
+            content = @Content(schema = @Schema(implementation = IndicacaoResponse.class))),
         @ApiResponse(responseCode = "400", description = "Dados inválidos ou tentativa de auto-indicação",
             content = @Content)
     })
@@ -46,6 +53,8 @@ public class IndicacaoController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar indicação por ID", description = "Retorna os detalhes completos de uma indicação específica")
+    @ApiResponse(responseCode = "200", description = "Indicação encontrada",
+        content = @Content(schema = @Schema(implementation = IndicacaoResponse.class)))
     public ResponseEntity<Indicacao> buscarPorId(
             @Parameter(description = "UUID da indicação") @PathVariable UUID id) {
         Indicacao indicacao = indicacaoService.buscarPorId(id);
@@ -53,17 +62,21 @@ public class IndicacaoController {
     }
 
     @GetMapping("/destinatario/{destinatarioId}")
-    @Operation(summary = "Listar indicações recebidas", 
+    @Operation(summary = "Listar indicações recebidas",
                description = "Retorna todas as indicações que um usuário recebeu, ordenadas da mais recente para a mais antiga")
+    @ApiResponse(responseCode = "200", description = "Lista de indicações recebidas",
+        content = @Content(array = @ArraySchema(schema = @Schema(implementation = IndicacaoSummary.class))))
     public ResponseEntity<List<Indicacao>> listarPorDestinatario(
             @Parameter(description = "UUID do destinatário") @PathVariable UUID destinatarioId) {
         List<Indicacao> indicacoes = indicacaoService.listarPorDestinatario(destinatarioId);
         return ResponseEntity.ok(indicacoes);
     }
 
-    @GetMapping("/destinatario/{destinatarioId}/nao-lidas")
-    @Operation(summary = "Listar indicações não lidas", 
+     @GetMapping("/destinatario/{destinatarioId}/nao-lidas")
+    @Operation(summary = "Listar indicações não lidas",
                description = "Retorna apenas as indicações que o usuário ainda não visualizou")
+    @ApiResponse(responseCode = "200", description = "Lista de indicações não lidas",
+        content = @Content(array = @ArraySchema(schema = @Schema(implementation = IndicacaoSummary.class))))
     public ResponseEntity<List<Indicacao>> listarNaoLidas(
             @Parameter(description = "UUID do destinatário") @PathVariable UUID destinatarioId) {
         List<Indicacao> indicacoes = indicacaoService.listarNaoLidas(destinatarioId);
@@ -71,8 +84,10 @@ public class IndicacaoController {
     }
 
     @GetMapping("/remetente/{remetenteId}")
-    @Operation(summary = "Listar indicações enviadas", 
+    @Operation(summary = "Listar indicações enviadas",
                description = "Retorna todas as indicações que um usuário enviou para outros")
+    @ApiResponse(responseCode = "200", description = "Lista de indicações enviadas",
+        content = @Content(array = @ArraySchema(schema = @Schema(implementation = IndicacaoSummary.class))))
     public ResponseEntity<List<Indicacao>> listarPorRemetente(
             @Parameter(description = "UUID do remetente") @PathVariable UUID remetenteId) {
         List<Indicacao> indicacoes = indicacaoService.listarPorRemetente(remetenteId);
@@ -80,7 +95,7 @@ public class IndicacaoController {
     }
 
     @GetMapping("/destinatario/{destinatarioId}/contador")
-    @Operation(summary = "Contar indicações não lidas", 
+    @Operation(summary = "Contar indicações não lidas",
                description = "Retorna a quantidade de indicações não lidas para exibir badge de notificação")
     public ResponseEntity<Long> contarNaoLidas(
             @Parameter(description = "UUID do destinatário") @PathVariable UUID destinatarioId) {
@@ -89,7 +104,7 @@ public class IndicacaoController {
     }
 
     @PatchMapping("/{id}/marcar-lida")
-    @Operation(summary = "Marcar indicação como lida", 
+    @Operation(summary = "Marcar indicação como lida",
                description = "Marca uma indicação específica como visualizada")
     public ResponseEntity<Void> marcarComoLida(
             @Parameter(description = "UUID da indicação") @PathVariable UUID id) {
@@ -98,7 +113,7 @@ public class IndicacaoController {
     }
 
     @PatchMapping("/destinatario/{destinatarioId}/marcar-todas-lidas")
-    @Operation(summary = "Marcar todas como lidas", 
+    @Operation(summary = "Marcar todas como lidas",
                description = "Marca todas as indicações de um usuário como visualizadas")
     public ResponseEntity<Void> marcarTodasComoLidas(
             @Parameter(description = "UUID do destinatário") @PathVariable UUID destinatarioId) {
