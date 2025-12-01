@@ -20,50 +20,25 @@ public class UsuarioService {
 
     private String salvarImagem(String base64) {
         try {
-            if (base64 == null || base64.trim().isEmpty()) {
-                throw new IllegalArgumentException("Imagem não pode ser vazia");
-            }
-            
-            String imageString = base64.trim();
-            
-            // LOG: Ver o que está chegando
-            System.out.println("=== DEBUG IMAGEM ===");
-            System.out.println("String original (primeiros 100 chars): " + imageString.substring(0, Math.min(100, imageString.length())));
-            System.out.println("Contém vírgula? " + imageString.contains(","));
-            
-            // Remove prefixo data URI se existir
-            if (imageString.contains(",")) {
-                int commaIndex = imageString.indexOf(",");
-                System.out.println("Índice da vírgula: " + commaIndex);
-                imageString = imageString.substring(commaIndex + 1);
-                System.out.println("Depois do corte (primeiros 50 chars): " + imageString.substring(0, Math.min(50, imageString.length())));
-            }
-            
-            // Remove todos os espaços em branco
-            imageString = imageString.replaceAll("\\s+", "");
-            
-            System.out.println("Depois de remover espaços (primeiros 50 chars): " + imageString.substring(0, Math.min(50, imageString.length())));
-            System.out.println("===================");
-            
-            // Decodifica o base64
+            String[] parts = base64.split(",");
+            String imageString = parts[1];
             byte[] imageBytes = java.util.Base64.getDecoder().decode(imageString);
 
             String fileName = UUID.randomUUID() + ".png";
             Path uploadDir = Paths.get("uploads");
             Path filePath = uploadDir.resolve(fileName);
 
+            // cria a pasta se não existir
             if (!Files.exists(uploadDir)) {
                 Files.createDirectories(uploadDir);
             }
 
             Files.write(filePath, imageBytes);
 
+            // retorna caminho relativo ou URL
             return "/uploads/" + fileName;
-            
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Formato de imagem inválido em base64: " + e.getMessage(), e);
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao salvar imagem: " + e.getMessage(), e);
+            throw new RuntimeException("Erro ao salvar imagem", e);
         }
     }
 
